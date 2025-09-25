@@ -290,7 +290,7 @@ Built with:
 ## Contact
 
 - GitHub Issues: [Report bugs or request features](https://github.com/mkupermann/dataseter/issues)
-- Email: dataseter@example.com
+- Email: michael@kupermann.com
 - Discord: [Join our community](https://discord.gg/dataseter)
 
 ---
