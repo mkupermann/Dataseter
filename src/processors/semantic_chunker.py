@@ -19,6 +19,7 @@ except ImportError:
 
 try:
     import spacy
+    from ..utils.spacy_loader import load_spacy_model, is_spacy_available
     SPACY_AVAILABLE = True
 except ImportError:
     SPACY_AVAILABLE = False
@@ -63,11 +64,11 @@ class SemanticChunker:
                 # Don't reassign TRANSFORMERS_AVAILABLE here - it's a module-level variable
 
         if SPACY_AVAILABLE:
-            try:
-                self.nlp = spacy.load("en_core_web_sm")
+            self.nlp = load_spacy_model("en_core_web_sm")
+            if self.nlp:
                 logger.info("SpaCy model loaded successfully")
-            except Exception as e:
-                logger.warning(f"Failed to load SpaCy model: {e}")
+            else:
+                logger.warning("No SpaCy models available, falling back to rule-based methods")
 
     def process(self, document: Any, **kwargs) -> Any:
         """Process document with semantic chunking"""

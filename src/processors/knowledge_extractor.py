@@ -12,6 +12,7 @@ import logging
 try:
     import spacy
     from spacy.matcher import Matcher, DependencyMatcher
+    from ..utils.spacy_loader import load_spacy_model, is_spacy_available
     SPACY_AVAILABLE = True
 except ImportError:
     SPACY_AVAILABLE = False
@@ -45,13 +46,13 @@ class KnowledgeExtractor:
         self.relation_pipeline = None
 
         if SPACY_AVAILABLE:
-            try:
-                self.nlp = spacy.load("en_core_web_sm")
+            self.nlp = load_spacy_model("en_core_web_sm")
+            if self.nlp:
                 self.matcher = Matcher(self.nlp.vocab)
                 self.dep_matcher = DependencyMatcher(self.nlp.vocab)
                 logger.info("SpaCy models loaded successfully")
-            except Exception as e:
-                logger.warning(f"Failed to load SpaCy models: {e}")
+            else:
+                logger.warning("No SpaCy models available, falling back to rule-based methods")
 
         if TRANSFORMERS_AVAILABLE:
             try:

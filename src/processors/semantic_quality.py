@@ -24,6 +24,8 @@ try:
 except ImportError:
     SPACY_AVAILABLE = False
 
+from ..utils.spacy_loader import load_spacy_model, is_spacy_available
+
 try:
     from transformers import pipeline
     TRANSFORMERS_AVAILABLE = True
@@ -60,12 +62,11 @@ class SemanticQualityScorer:
             except Exception as e:
                 logger.warning(f"Failed to load sentence transformer: {e}")
 
-        if SPACY_AVAILABLE:
-            try:
-                self.nlp = spacy.load("en_core_web_sm")
-                logger.info("SpaCy loaded for quality scoring")
-            except Exception as e:
-                logger.warning(f"Failed to load SpaCy: {e}")
+        self.nlp = load_spacy_model("en_core_web_sm")
+        if self.nlp:
+            logger.info("SpaCy model loaded successfully")
+        else:
+            logger.warning("No SpaCy models available, falling back to rule-based methods")
 
         if TRANSFORMERS_AVAILABLE:
             try:

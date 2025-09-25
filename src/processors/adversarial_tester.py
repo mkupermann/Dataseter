@@ -21,6 +21,8 @@ try:
 except ImportError:
     SPACY_AVAILABLE = False
 
+from ..utils.spacy_loader import load_spacy_model, is_spacy_available
+
 try:
     from sentence_transformers import SentenceTransformer
     from sklearn.metrics.pairwise import cosine_similarity
@@ -59,12 +61,11 @@ class AdversarialTester:
         self.bias_classifier = None
         self.sentence_model = None
 
-        if SPACY_AVAILABLE:
-            try:
-                self.nlp = spacy.load("en_core_web_sm")
-                logger.info("SpaCy loaded for adversarial testing")
-            except Exception as e:
-                logger.warning(f"Failed to load SpaCy: {e}")
+        self.nlp = load_spacy_model("en_core_web_sm")
+        if self.nlp:
+            logger.info("SpaCy model loaded successfully")
+        else:
+            logger.warning("No SpaCy models available, falling back to rule-based methods")
 
         if TRANSFORMERS_AVAILABLE:
             try:

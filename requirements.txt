@@ -34,6 +34,7 @@ xlrd>=2.0.1
 ebooklib>=0.18
 mobi>=0.3.3
 pypub>=1.5
+html2text>=2020.1.16
 
 # Text processing
 nltk>=3.8.0

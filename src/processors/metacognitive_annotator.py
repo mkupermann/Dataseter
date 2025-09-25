@@ -16,6 +16,8 @@ try:
 except ImportError:
     SPACY_AVAILABLE = False
 
+from ..utils.spacy_loader import load_spacy_model, is_spacy_available
+
 try:
     from transformers import pipeline
     TRANSFORMERS_AVAILABLE = True
@@ -45,13 +47,12 @@ class MetacognitiveAnnotator:
         self.sentiment_analyzer = None
         self.matcher = None
 
-        if SPACY_AVAILABLE:
-            try:
-                self.nlp = spacy.load("en_core_web_sm")
-                self.matcher = Matcher(self.nlp.vocab)
-                logger.info("SpaCy loaded for metacognitive analysis")
-            except Exception as e:
-                logger.warning(f"Failed to load SpaCy: {e}")
+        self.nlp = load_spacy_model("en_core_web_sm")
+        if self.nlp:
+            self.matcher = Matcher(self.nlp.vocab)
+            logger.info("SpaCy model loaded successfully")
+        else:
+            logger.warning("No SpaCy models available, falling back to rule-based methods")
 
         if TRANSFORMERS_AVAILABLE:
             try:

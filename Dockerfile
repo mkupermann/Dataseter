@@ -41,8 +41,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Download NLTK data
 RUN python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords')"
 
-# Download spaCy model
-RUN python -m spacy download en_core_web_sm
+# Download spaCy models with fallback options
+RUN python -m spacy download en_core_web_sm || \
+    python -m spacy download en_core_web_md || \
+    python -m spacy download en || \
+    echo "Warning: No spaCy models could be downloaded - will use fallback methods"
 
 # Stage 3: Application
 FROM dependencies as app
