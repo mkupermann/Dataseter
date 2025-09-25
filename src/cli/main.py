@@ -22,6 +22,10 @@ def cli():
     """Dataseter - Advanced AI Training Dataset Creator"""
     pass
 
+def main():
+    """Main entry point for the CLI"""
+    cli()
+
 @cli.command()
 @click.option('--pdf', multiple=True, help='PDF files to process')
 @click.option('--website', multiple=True, help='Websites to scrape')

@@ -57,7 +57,7 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "dataseter=cli.main:main",
+            "dataseter=cli:main",
         ],
     },
     include_package_data=True,
