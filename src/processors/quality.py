@@ -1,11 +1,17 @@
 """
-Quality filtering and scoring module
+Quality filtering and scoring module with advanced semantic quality assessment
 """
 
 import re
 import logging
 from typing import Dict, Any
 from langdetect import detect, LangDetectException
+
+try:
+    from .semantic_quality import SemanticQualityScorer
+    SEMANTIC_QUALITY_AVAILABLE = True
+except ImportError:
+    SEMANTIC_QUALITY_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 
@@ -22,14 +28,37 @@ class QualityFilter:
         self.max_word_count = config.get('max_word_count', 10000)
         self.min_avg_word_length = config.get('min_avg_word_length', 3)
         self.max_repetition_ratio = config.get('max_repetition_ratio', 0.3)
+        self.use_semantic_scoring = config.get('use_semantic_scoring', True)
+
+        # Initialize semantic quality scorer if available
+        self.semantic_scorer = None
+        if SEMANTIC_QUALITY_AVAILABLE and self.use_semantic_scoring:
+            try:
+                self.semantic_scorer = SemanticQualityScorer(config.get('semantic_quality', {}))
+                logger.info("Semantic quality scoring enabled")
+            except Exception as e:
+                logger.warning(f"Failed to initialize semantic quality scorer: {e}")
+                self.semantic_scorer = None
 
     def process(self, document: Any, **kwargs) -> Any:
         """Filter document based on quality"""
         threshold = kwargs.get('threshold', self.min_score)
 
         if hasattr(document, 'text'):
-            score = self.calculate_quality_score(document.text)
-            document.quality_score = score
+            # Use advanced semantic scoring if available
+            if self.semantic_scorer:
+                try:
+                    # Process with semantic scorer (adds detailed quality analysis)
+                    document = self.semantic_scorer.process(document, **kwargs)
+                    score = document.quality_score if hasattr(document, 'quality_score') else 0.5
+                except Exception as e:
+                    logger.warning(f"Semantic quality scoring failed: {e}")
+                    score = self.calculate_quality_score(document.text)
+                    document.quality_score = score
+            else:
+                # Fallback to basic quality scoring
+                score = self.calculate_quality_score(document.text)
+                document.quality_score = score
 
             # Detect language
             if self.detect_language:

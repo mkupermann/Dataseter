@@ -51,11 +51,21 @@
                         <!-- Web URL Input -->
                         <div class="mb-4">
                             <label class="block text-sm font-medium mb-2">Website URL</label>
-                            <div class="flex">
+                            <div class="flex mb-2">
                                 <input type="url" id="web-url" placeholder="https://example.com" class="flex-1 border rounded-l px-3 py-2">
                                 <button onclick="addWebSource()" class="bg-green-500 text-white px-4 py-2 rounded-r hover:bg-green-600">
                                     Add Website
                                 </button>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <label class="flex items-center text-sm">
+                                    <span class="mr-2">Crawl Depth:</span>
+                                    <input type="number" id="web-depth" value="2" min="0" max="10" class="w-16 border rounded px-2 py-1">
+                                    <span class="ml-2 text-gray-500">(levels)</span>
+                                </label>
+                                <span class="text-xs text-gray-500">
+                                    <i class="fas fa-info-circle"></i> 0 = only main page, 1 = main + direct links, etc.
+                                </span>
                             </div>
                         </div>
 
@@ -93,6 +103,46 @@
                                 <input type="checkbox" id="remove-pii" checked class="mr-2">
                                 <span class="text-sm">Remove PII (Personal Identifiable Information)</span>
                             </label>
+                        </div>
+                    </div>
+
+                    <!-- Advanced AI Features -->
+                    <div class="mb-6 border-t pt-4">
+                        <h3 class="text-lg font-semibold mb-3">
+                            <i class="fas fa-brain mr-2 text-purple-600"></i>
+                            Advanced AI Features
+                        </h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Chunking Strategy</label>
+                                <select id="chunking-strategy" class="w-full border rounded px-3 py-2">
+                                    <option value="semantic" selected>Semantic (AI-Powered)</option>
+                                    <option value="sliding">Sliding Window</option>
+                                    <option value="sentence">Sentence-based</option>
+                                </select>
+                                <p class="text-xs text-gray-500 mt-1">Preserves reasoning chains & logical flow</p>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="extract-knowledge" checked class="mr-2">
+                                    <span class="text-sm">Extract Knowledge Graphs</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="metacognitive-annotations" checked class="mr-2">
+                                    <span class="text-sm">Add Metacognitive Annotations</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="adversarial-testing" checked class="mr-2">
+                                    <span class="text-sm">Enable Adversarial Testing</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mt-3 p-3 bg-purple-50 rounded-lg">
+                            <p class="text-sm text-purple-800">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                <strong>AI Features:</strong> Knowledge extraction builds entity relationships,
+                                metacognitive annotations add learning metadata, and adversarial testing detects biases and contradictions.
+                            </p>
                         </div>
                     </div>
 

@@ -183,10 +183,31 @@ class Chunker:
         return chunks
 
     def _semantic_chunking(self, text: str, **kwargs) -> List[Dict[str, Any]]:
-        """Semantic chunking based on content structure"""
-        # This is a simplified version
-        # A real implementation would use embeddings or NLP models
+        """Advanced semantic chunking with transformer-based boundary detection"""
+        try:
+            from .semantic_chunker import SemanticChunker
 
+            # Use advanced semantic chunker if available
+            semantic_chunker = SemanticChunker(self.config)
+
+            # Create a mock document for processing
+            class MockDocument:
+                def __init__(self, text):
+                    self.text = text
+                    self.chunks = []
+                    self.metadata = {}
+
+            mock_doc = MockDocument(text)
+            processed_doc = semantic_chunker.process(mock_doc, **kwargs)
+
+            return processed_doc.chunks
+
+        except Exception as e:
+            logger.warning(f"Advanced semantic chunking failed, using fallback: {e}")
+            return self._fallback_semantic_chunking(text, **kwargs)
+
+    def _fallback_semantic_chunking(self, text: str, **kwargs) -> List[Dict[str, Any]]:
+        """Fallback semantic chunking based on content structure"""
         # Split by headers or natural breaks
         sections = re.split(r'\n(?=[A-Z#*-])', text)
         chunk_size = kwargs.get('size', self.chunk_size)

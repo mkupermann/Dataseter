@@ -9,7 +9,7 @@
 
 Dataseter is a comprehensive, production-ready tool for creating high-quality datasets for AI/ML training from diverse sources including PDFs, websites, office documents, and eBooks. It features advanced text extraction, processing pipelines, quality control, and both CLI and web interfaces.
 
-## Key Features
+## 🎯 Key Features
 
 ### Multi-Source Data Extraction
 - **PDF Processing**: Advanced OCR, layout preservation, table extraction
@@ -18,9 +18,40 @@ Dataseter is a comprehensive, production-ready tool for creating high-quality da
 - **eBooks**: EPUB, MOBI, AZW3, FB2 support
 - **Plain Text**: TXT, Markdown, RTF, LaTeX
 
-### Advanced Processing
-- **Intelligent Chunking**: Semantic, sliding window, and custom strategies
-- **Quality Control**: Deduplication, language detection, quality scoring
+### Advanced AI-Optimized Processing 🚀
+
+#### Semantic Chunking with Reasoning Preservation
+- **Transformer-Based Boundaries**: Uses sentence transformers to find natural semantic boundaries
+- **Reasoning Chain Detection**: Preserves logical arguments and causal relationships
+- **Argument Structure Recognition**: Maintains premise-conclusion relationships
+- **Coherence Scoring**: Ensures chunks maintain contextual integrity
+
+#### Knowledge Graph Extraction
+- **Entity Recognition**: Automated extraction of people, places, organizations
+- **Relationship Mapping**: Discovers connections between entities
+- **Concept Hierarchies**: Builds taxonomies of domain concepts
+- **Fact Extraction**: Structured knowledge from unstructured text
+
+#### Advanced Quality Assessment
+- **Semantic Quality Scoring**: Multi-dimensional quality analysis
+- **Authority Detection**: Identifies authoritative vs. speculative content
+- **Factuality Assessment**: Evaluates factual accuracy and consistency
+- **Training Value Scoring**: Estimates usefulness for AI model training
+
+#### Metacognitive Annotations
+- **Confidence Analysis**: Assesses certainty levels in statements
+- **Complexity Metrics**: Evaluates cognitive load and readability
+- **Prerequisite Knowledge**: Identifies required background concepts
+- **Learning Objectives**: Extracts educational goals and outcomes
+
+#### Adversarial Testing Framework
+- **Bias Detection**: Identifies and quantifies various bias types
+- **Contradiction Analysis**: Finds logical inconsistencies
+- **Harmful Content Detection**: Screens for inappropriate content
+- **Fairness Analysis**: Ensures balanced representation
+
+#### Standard Processing Features
+- **Quality Control**: Deduplication, language detection
 - **Privacy Protection**: PII detection and redaction
 - **Metadata Preservation**: Source tracking, timestamps, authorship
 - **Multi-Language Support**: 50+ languages with proper tokenization
@@ -66,12 +97,17 @@ creator.add_pdf("documents/report.pdf")
 creator.add_website("https://example.com", max_depth=2)
 creator.add_directory("./texts", recursive=True)
 
-# Process and create dataset
+# Process with advanced AI features
 dataset = creator.process(
     chunk_size=512,
     overlap=50,
     remove_pii=True,
-    quality_threshold=0.7
+    quality_threshold=0.7,
+    # New AI-optimized features
+    chunking_strategy='semantic',  # Preserves reasoning chains
+    extract_knowledge=True,         # Build knowledge graphs
+    add_metacognitive_annotations=True,  # Add learning metadata
+    enable_adversarial_testing=True      # Screen for bias/issues
 )
 
 # Export
@@ -107,10 +143,11 @@ dataseter web
 
 Features:
 - Drag-and-drop file upload
-- Real-time processing progress
-- Interactive configuration
-- Dataset preview and download
-- Analysis dashboard
+- Real-time processing progress with time estimation
+- Interactive configuration with depth control
+- Dataset preview and quality metrics
+- Download with comprehensive error handling
+- Analysis dashboard with recommendations
 
 ## Project Structure
 
@@ -236,6 +273,16 @@ creator = DistributedCreator(
 - **Access Control**: API key authentication, rate limiting
 - **Audit Logging**: Complete processing history
 - **GDPR Compliance**: Right to deletion, data minimization
+
+## Recent Improvements
+
+### v1.1 - Progress Tracking & Quality Enhancements
+- **Real-time Progress**: Complete progress tracking with time estimation and remaining duration
+- **Web Extraction Fixes**: Resolved hanging issues with depth-controlled crawling
+- **Quality Metrics**: Enhanced dataset preview with quality scoring and recommendations
+- **Error Handling**: Improved error handling for empty datasets and failed extractions
+- **Threading**: Non-blocking background processing with comprehensive status updates
+- **Docker Support**: Multi-stage Docker builds with optimized dependencies
 
 ## Testing
 

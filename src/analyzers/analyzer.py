@@ -35,23 +35,41 @@ class DatasetAnalyzer:
 
         # Calculate text length statistics
         text_lengths = [len(doc.text) for doc in dataset.documents]
-        stats['text_length_stats'] = {
-            'mean': statistics.mean(text_lengths),
-            'median': statistics.median(text_lengths),
-            'min': min(text_lengths),
-            'max': max(text_lengths),
-            'total': sum(text_lengths)
-        }
+        if text_lengths:
+            stats['text_length_stats'] = {
+                'mean': statistics.mean(text_lengths),
+                'median': statistics.median(text_lengths),
+                'min': min(text_lengths),
+                'max': max(text_lengths),
+                'total': sum(text_lengths)
+            }
+        else:
+            stats['text_length_stats'] = {
+                'mean': 0,
+                'median': 0,
+                'min': 0,
+                'max': 0,
+                'total': 0
+            }
 
         # Word count statistics
         word_counts = [len(doc.text.split()) for doc in dataset.documents]
-        stats['word_count_stats'] = {
-            'mean': statistics.mean(word_counts),
-            'median': statistics.median(word_counts),
-            'min': min(word_counts),
-            'max': max(word_counts),
-            'total': sum(word_counts)
-        }
+        if word_counts:
+            stats['word_count_stats'] = {
+                'mean': statistics.mean(word_counts),
+                'median': statistics.median(word_counts),
+                'min': min(word_counts),
+                'max': max(word_counts),
+                'total': sum(word_counts)
+            }
+        else:
+            stats['word_count_stats'] = {
+                'mean': 0,
+                'median': 0,
+                'min': 0,
+                'max': 0,
+                'total': 0
+            }
 
         # Vocabulary analysis
         all_words = []

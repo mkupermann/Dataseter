@@ -28,6 +28,23 @@ from .processors import (
     PrivacyProtector,
     QualityFilter,
 )
+try:
+    from .processors.knowledge_extractor import KnowledgeExtractor
+    KNOWLEDGE_EXTRACTION_AVAILABLE = True
+except ImportError:
+    KNOWLEDGE_EXTRACTION_AVAILABLE = False
+
+try:
+    from .processors.metacognitive_annotator import MetacognitiveAnnotator
+    METACOGNITIVE_ANNOTATION_AVAILABLE = True
+except ImportError:
+    METACOGNITIVE_ANNOTATION_AVAILABLE = False
+
+try:
+    from .processors.adversarial_tester import AdversarialTester
+    ADVERSARIAL_TESTING_AVAILABLE = True
+except ImportError:
+    ADVERSARIAL_TESTING_AVAILABLE = False
 from .formatters import (
     JSONLFormatter,
     ParquetFormatter,
@@ -171,6 +188,24 @@ class DatasetCreator:
             'quality': QualityFilter(processing_config.get('quality', {})),
         }
 
+        # Add knowledge extractor if available
+        if KNOWLEDGE_EXTRACTION_AVAILABLE:
+            self.processors['knowledge'] = KnowledgeExtractor(
+                processing_config.get('knowledge_extraction', {})
+            )
+
+        # Add metacognitive annotator if available
+        if METACOGNITIVE_ANNOTATION_AVAILABLE:
+            self.processors['metacognitive'] = MetacognitiveAnnotator(
+                processing_config.get('metacognitive_annotation', {})
+            )
+
+        # Add adversarial tester if available
+        if ADVERSARIAL_TESTING_AVAILABLE:
+            self.processors['adversarial'] = AdversarialTester(
+                processing_config.get('adversarial_testing', {})
+            )
+
     def add_pdf(self, path: str, **kwargs):
         """Add a PDF file as a data source"""
         self.sources.append({
@@ -268,6 +303,11 @@ class DatasetCreator:
         pipeline: Optional[Pipeline] = None,
         parallel: bool = True,
         max_workers: Optional[int] = None,
+        progress_callback: Optional[Callable[[int, str], None]] = None,
+        chunking_strategy: str = 'semantic',
+        extract_knowledge: bool = True,
+        add_metacognitive_annotations: bool = True,
+        enable_adversarial_testing: bool = True,
     ) -> Dataset:
         """Process all sources and create the dataset
 
@@ -293,34 +333,57 @@ class DatasetCreator:
                 overlap=overlap,
                 remove_pii=remove_pii,
                 quality_threshold=quality_threshold,
-                remove_duplicates=remove_duplicates
+                remove_duplicates=remove_duplicates,
+                chunking_strategy=chunking_strategy,
+                extract_knowledge=extract_knowledge,
+                add_metacognitive_annotations=add_metacognitive_annotations,
+                enable_adversarial_testing=enable_adversarial_testing
             )
 
         # Extract data from all sources
         documents = []
+        total_sources = len(self.sources)
 
-        if parallel and len(self.sources) > 1:
+        if parallel and total_sources > 1:
             max_workers = max_workers or self.config.get('general', {}).get('max_workers', 4)
             with ThreadPoolExecutor(max_workers=max_workers) as executor:
                 futures = []
                 for source in self.sources:
-                    future = executor.submit(self._extract_source, source)
+                    future = executor.submit(self._extract_source, source, progress_callback)
                     futures.append(future)
 
-                for future in tqdm(futures, desc="Extracting sources"):
+                for i, future in enumerate(tqdm(futures, desc="Extracting sources")):
+                    if progress_callback:
+                        # Update progress during extraction (30-60% range)
+                        progress = 30 + int((i / max(total_sources, 1)) * 30)
+                        source_name = self.sources[i].get('url', self.sources[i].get('path', 'source'))
+                        progress_callback(progress, f"Extracting from {source_name[:50]}...")
                     doc = future.result()
                     if doc:
                         documents.append(doc)
         else:
-            for source in tqdm(self.sources, desc="Extracting sources"):
-                doc = self._extract_source(source)
+            for i, source in enumerate(tqdm(self.sources, desc="Extracting sources")):
+                if progress_callback:
+                    # Update progress during extraction (30-60% range)
+                    progress = 30 + int((i / max(total_sources, 1)) * 30)
+                    source_name = source.get('url', source.get('path', 'source'))
+                    progress_callback(progress, f"Extracting from {source_name[:50]}...")
+                doc = self._extract_source(source, progress_callback)
                 if doc:
                     documents.append(doc)
 
         # Process documents through pipeline
         logger.info("Processing documents through pipeline")
         processed_documents = []
-        for doc in tqdm(documents, desc="Processing documents"):
+        total_docs = len(documents)
+
+        for i, doc in enumerate(documents):
+            if progress_callback:
+                # Calculate progress 60-80% range for processing
+                progress = 60 + int((i / max(total_docs, 1)) * 20)
+                doc_name = doc.source.split('/')[-1] if '/' in doc.source else doc.source
+                progress_callback(progress, f"Processing document {i+1}/{total_docs}: {doc_name[:50]}...")
+
             processed_doc = pipeline.process(doc)
             if processed_doc:
                 processed_documents.append(processed_doc)
@@ -349,7 +412,7 @@ class DatasetCreator:
         logger.info(f"Dataset created with {len(self.dataset)} documents")
         return self.dataset
 
-    def _extract_source(self, source: Dict[str, Any]) -> Optional[Document]:
+    def _extract_source(self, source: Dict[str, Any], progress_callback: Optional[Callable[[int, str], None]] = None) -> Optional[Document]:
         """Extract data from a single source"""
         try:
             source_type = source['type']
@@ -361,7 +424,13 @@ class DatasetCreator:
 
             # Extract data
             if source_type == 'web':
-                data = extractor.extract(source['url'], **source.get('options', {}))
+                # Pass max_depth and progress_callback for web extraction
+                options = source.get('options', {})
+                if 'max_depth' in source:
+                    options['max_depth'] = source['max_depth']
+                if progress_callback:
+                    options['progress_callback'] = progress_callback
+                data = extractor.extract(source['url'], **options)
             else:
                 data = extractor.extract(source['path'], **source.get('options', {}))
 
@@ -384,7 +453,7 @@ class DatasetCreator:
             return None
 
     def _build_default_pipeline(self, **kwargs) -> Pipeline:
-        """Build default processing pipeline"""
+        """Build default processing pipeline with advanced features"""
         pipeline = Pipeline()
 
         # Add cleaning step
@@ -401,16 +470,30 @@ class DatasetCreator:
         if kwargs.get('remove_pii'):
             pipeline.add_step(self.processors['privacy'])
 
-        # Add chunking
+        # Add knowledge extraction (before chunking to preserve context)
+        if kwargs.get('extract_knowledge', True) and 'knowledge' in self.processors:
+            pipeline.add_step(self.processors['knowledge'])
+
+        # Add metacognitive annotations (after knowledge extraction)
+        if kwargs.get('add_metacognitive_annotations', True) and 'metacognitive' in self.processors:
+            pipeline.add_step(self.processors['metacognitive'])
+
+        # Add chunking (now with semantic awareness)
+        chunking_strategy = kwargs.get('chunking_strategy', 'semantic')
         pipeline.add_step(
             self.processors['chunker'],
             size=kwargs.get('chunk_size', 512),
-            overlap=kwargs.get('overlap', 50)
+            overlap=kwargs.get('overlap', 50),
+            strategy=chunking_strategy
         )
 
         # Add deduplication
         if kwargs.get('remove_duplicates'):
             pipeline.add_step(self.processors['deduplicator'])
+
+        # Add adversarial testing (final step to catch issues before output)
+        if kwargs.get('enable_adversarial_testing', True) and 'adversarial' in self.processors:
+            pipeline.add_step(self.processors['adversarial'])
 
         return pipeline
 

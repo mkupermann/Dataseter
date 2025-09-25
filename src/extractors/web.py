@@ -47,12 +47,12 @@ class WebExtractor(BaseExtractor):
         """
         super().__init__(config)
         self.max_depth = config.get('max_depth', 3)
-        self.max_pages = config.get('max_pages', 1000)
+        self.max_pages = config.get('max_pages', 100)  # Reduced default from 1000 to 100
         self.respect_robots = config.get('respect_robots', True)
         self.user_agent = config.get('user_agent', 'Dataseter/1.0')
         self.javascript_rendering = config.get('javascript_rendering', False)
-        self.rate_limit = config.get('rate_limit', 1.0)  # requests per second
-        self.timeout = config.get('timeout', 30)
+        self.rate_limit = config.get('rate_limit', 0.5)  # Increased rate limit
+        self.timeout = config.get('timeout', 10)  # Reduced timeout
         self.retry_attempts = config.get('retry_attempts', 3)
         self.follow_redirects = config.get('follow_redirects', True)
         self.allowed_domains = set(config.get('allowed_domains', []))
@@ -84,12 +84,13 @@ class WebExtractor(BaseExtractor):
 
         Args:
             source: URL to scrape
-            **kwargs: Additional extraction options
+            **kwargs: Additional extraction options (including progress_callback)
 
         Returns:
             Dictionary with extracted text and metadata
         """
         max_depth = kwargs.get('max_depth', self.max_depth)
+        progress_callback = kwargs.get('progress_callback', None)
 
         try:
             # Reset tracking for new extraction
@@ -127,6 +128,12 @@ class WebExtractor(BaseExtractor):
                     all_metadata.append(content['metadata'])
                     self.visited_urls.add(url)
                     pages_processed += 1
+
+                    # Update progress during extraction (30-60% range)
+                    if progress_callback:
+                        extraction_progress = 30 + int((pages_processed / self.max_pages) * 30)
+                        page_name = url.split('/')[-1] if '/' in url else url
+                        progress_callback(extraction_progress, f"Crawling page {pages_processed}/{self.max_pages}: {page_name[:30]}...")
 
                     # Find and queue links if not at max depth
                     if depth < max_depth:
