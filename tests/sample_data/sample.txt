@@ -1,0 +1,35 @@
+This is a sample text document for testing the Dataseter tool.
+
+It contains multiple paragraphs to test the chunking functionality. Each paragraph has different content to ensure variety in the dataset. The tool should be able to extract this text and process it according to the specified parameters.
+
+This paragraph contains some potentially sensitive information that should be detected and redacted if PII removal is enabled. For example, contact John Doe at john.doe@example.com or call 555-123-4567. His social security number is 123-45-6789 (fake).
+
+## Technical Content
+
+This section includes technical documentation to test quality scoring. The algorithm uses a sliding window approach with configurable overlap. The chunk size can be adjusted based on the model requirements. The quality filter ensures that only high-quality text is included in the final dataset.
+
+### Code Example
+
+Here's a Python code snippet:
+```python
+def process_text(text):
+    chunks = []
+    for i in range(0, len(text), chunk_size):
+        chunk = text[i:i+chunk_size]
+        chunks.append(chunk)
+    return chunks
+```
+
+## Multilingual Content
+
+This tool supports multiple languages. Here are some examples:
+- English: Hello, world!
+- Spanish: ¡Hola, mundo!
+- French: Bonjour, le monde!
+- German: Hallo, Welt!
+- Chinese: 你好，世界！
+- Japanese: こんにちは、世界！
+
+## Conclusion
+
+This sample document demonstrates various features of the Dataseter tool, including text extraction, chunking, PII detection, quality filtering, and multilingual support. The tool should process this document successfully and create a high-quality dataset suitable for AI training.
