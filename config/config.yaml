@@ -1,0 +1,178 @@
+# Dataseter Configuration File
+
+# General settings
+general:
+  log_level: "INFO"
+  temp_directory: "/tmp/dataseter"
+  max_workers: 4
+  cache_enabled: true
+  cache_directory: "~/.dataseter/cache"
+
+# Data extraction settings
+extraction:
+  # PDF extraction
+  pdf:
+    ocr_enabled: true
+    ocr_language: "eng"
+    extract_tables: true
+    extract_images: false
+    preserve_layout: false
+    max_pages: null
+    dpi: 300
+
+  # Web scraping
+  web:
+    max_depth: 3
+    max_pages: 1000
+    respect_robots: true
+    user_agent: "Dataseter/1.0 (AI Dataset Creator)"
+    javascript_rendering: true
+    rate_limit: 1.0  # requests per second
+    timeout: 30  # seconds
+    retry_attempts: 3
+    follow_redirects: true
+    allowed_domains: []
+    blocked_domains: []
+
+  # Office documents
+  office:
+    extract_comments: true
+    extract_metadata: true
+    extract_headers_footers: true
+    extract_tables: true
+    preserve_formatting: false
+
+  # eBooks
+  ebook:
+    extract_metadata: true
+    extract_toc: true
+    preserve_chapter_structure: true
+    convert_to_text: true
+
+# Text processing settings
+processing:
+  # Chunking
+  chunking:
+    strategy: "semantic"  # Options: semantic, fixed, sliding_window, sentence, paragraph
+    size: 512
+    overlap: 50
+    min_chunk_size: 100
+    max_chunk_size: 2048
+    preserve_sentences: true
+
+  # Cleaning
+  cleaning:
+    lowercase: false
+    remove_html: true
+    remove_urls: true
+    remove_emails: true
+    fix_unicode: true
+    remove_extra_whitespace: true
+    remove_special_chars: false
+
+  # Quality control
+  quality:
+    min_score: 0.7
+    remove_duplicates: true
+    duplicate_threshold: 0.95
+    detect_language: true
+    allowed_languages: ["en", "es", "fr", "de", "it", "pt", "nl", "ru", "zh", "ja", "ko"]
+    min_word_count: 10
+    max_word_count: 10000
+
+  # Privacy
+  privacy:
+    detect_pii: true
+    pii_entities: ["PERSON", "EMAIL", "PHONE", "SSN", "CREDIT_CARD", "IP_ADDRESS", "LOCATION"]
+    redaction_method: "mask"  # Options: mask, remove, hash, encrypt
+    custom_patterns: []
+
+# Output settings
+output:
+  formats: ["jsonl", "parquet"]  # Options: json, jsonl, csv, parquet, arrow, huggingface
+  compression: "gzip"  # Options: none, gzip, bz2, xz, zstd
+  include_metadata: true
+  include_statistics: true
+  batch_size: 1000
+  output_directory: "./output"
+  filename_pattern: "dataset_{timestamp}_{format}"
+
+  # Schema
+  schema:
+    text_field: "text"
+    metadata_field: "metadata"
+    id_field: "id"
+    source_field: "source"
+    timestamp_field: "timestamp"
+
+  # Tokenization (for token counting)
+  tokenization:
+    tokenizer: "gpt2"  # Options: gpt2, bert, t5, tiktoken, custom
+    add_token_counts: true
+    max_tokens: null
+
+# Analysis settings
+analysis:
+  compute_statistics: true
+  generate_report: true
+  visualization:
+    word_cloud: true
+    distribution_plots: true
+    quality_heatmap: true
+    language_distribution: true
+  metrics:
+    - "total_documents"
+    - "total_chunks"
+    - "avg_chunk_length"
+    - "vocabulary_size"
+    - "language_distribution"
+    - "quality_distribution"
+    - "source_distribution"
+    - "duplicate_ratio"
+    - "pii_detection_summary"
+
+# API settings
+api:
+  host: "0.0.0.0"
+  port: 8000
+  cors_origins: ["*"]
+  max_upload_size: 104857600  # 100 MB
+  rate_limit: 100  # requests per minute
+  api_key_required: false
+  api_keys: []
+
+# Web UI settings
+web:
+  host: "0.0.0.0"
+  port: 8080
+  enable_upload: true
+  enable_download: true
+  max_concurrent_jobs: 10
+  session_timeout: 3600  # seconds
+
+# Database settings
+database:
+  type: "sqlite"  # Options: sqlite, postgresql, mysql
+  connection_string: "sqlite:///./dataseter.db"
+  pool_size: 10
+  echo: false
+
+# Monitoring settings
+monitoring:
+  prometheus_enabled: false
+  prometheus_port: 9090
+  sentry_enabled: false
+  sentry_dsn: ""
+  log_to_file: true
+  log_file: "dataseter.log"
+  log_rotation: "10 MB"
+  log_retention: 7  # days
+
+# Distributed processing
+distributed:
+  enabled: false
+  backend: "ray"  # Options: ray, dask, spark
+  scheduler_address: null
+  num_workers: 4
+  worker_memory: "4GB"
+  worker_cpu: 2

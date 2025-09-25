@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dataseter - AI Training Dataset Creator</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    <div id="app">
+        <!-- Header -->
+        <header class="bg-blue-600 text-white p-4 shadow-lg">
+            <div class="container mx-auto flex items-center justify-between">
+                <div class="flex items-center">
+                    <i class="fas fa-database text-3xl mr-3"></i>
+                    <h1 class="text-2xl font-bold">Dataseter</h1>
+                </div>
+                <nav>
+                    <button onclick="showPage('create')" class="px-4 py-2 hover:bg-blue-700 rounded">Create Dataset</button>
+                    <button onclick="showPage('analyze')" class="px-4 py-2 hover:bg-blue-700 rounded">Analyze</button>
+                    <button onclick="showPage('jobs')" class="px-4 py-2 hover:bg-blue-700 rounded">Jobs</button>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container mx-auto mt-8 px-4">
+            <!-- Create Dataset Page -->
+            <div id="create-page" class="page">
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-2xl font-bold mb-6">Create New Dataset</h2>
+
+                    <!-- Source Selection -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold mb-3">Data Sources</h3>
+
+                        <!-- File Upload -->
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 mb-4">
+                            <div class="text-center">
+                                <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-3"></i>
+                                <p class="text-gray-600 mb-3">Drag and drop files here or click to browse</p>
+                                <input type="file" id="file-input" multiple class="hidden" onchange="handleFileSelect(event)">
+                                <button onclick="document.getElementById('file-input').click()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                                    Choose Files
+                                </button>
+                            </div>
+                            <div id="file-list" class="mt-4"></div>
+                        </div>
+
+                        <!-- Web URL Input -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2">Website URL</label>
+                            <div class="flex">
+                                <input type="url" id="web-url" placeholder="https://example.com" class="flex-1 border rounded-l px-3 py-2">
+                                <button onclick="addWebSource()" class="bg-green-500 text-white px-4 py-2 rounded-r hover:bg-green-600">
+                                    Add Website
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Source List -->
+                        <div id="source-list" class="mt-4"></div>
+                    </div>
+
+                    <!-- Processing Options -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold mb-3">Processing Options</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Chunk Size</label>
+                                <input type="number" id="chunk-size" value="512" class="w-full border rounded px-3 py-2">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Overlap</label>
+                                <input type="number" id="overlap" value="50" class="w-full border rounded px-3 py-2">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Quality Threshold</label>
+                                <input type="number" id="quality-threshold" value="0.7" step="0.1" min="0" max="1" class="w-full border rounded px-3 py-2">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Output Format</label>
+                                <select id="output-format" class="w-full border rounded px-3 py-2">
+                                    <option value="jsonl">JSONL</option>
+                                    <option value="parquet">Parquet</option>
+                                    <option value="csv">CSV</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <label class="flex items-center">
+                                <input type="checkbox" id="remove-pii" checked class="mr-2">
+                                <span class="text-sm">Remove PII (Personal Identifiable Information)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex justify-end gap-4">
+                        <button onclick="clearAll()" class="px-6 py-2 border border-gray-300 rounded hover:bg-gray-100">
+                            Clear All
+                        </button>
+                        <button onclick="startExtraction()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+                            <i class="fas fa-play mr-2"></i>Start Extraction
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jobs Page -->
+            <div id="jobs-page" class="page hidden">
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-2xl font-bold mb-6">Processing Jobs</h2>
+                    <div id="jobs-list"></div>
+                </div>
+            </div>
+
+            <!-- Analyze Page -->
+            <div id="analyze-page" class="page hidden">
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-2xl font-bold mb-6">Dataset Analysis</h2>
+                    <div id="analysis-content">
+                        <p class="text-gray-600">Upload a dataset to analyze</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Progress Modal -->
+    <div id="progress-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full">
+            <h3 class="text-xl font-bold mb-4">Processing Dataset</h3>
+            <div class="mb-4">
+                <div class="bg-gray-200 rounded-full h-4 overflow-hidden">
+                    <div id="progress-bar" class="bg-blue-600 h-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+                <p id="progress-message" class="text-sm text-gray-600 mt-2">Initializing...</p>
+            </div>
+            <button onclick="hideProgressModal()" class="w-full bg-gray-500 text-white py-2 rounded hover:bg-gray-600">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

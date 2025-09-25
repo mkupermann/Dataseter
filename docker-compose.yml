@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  dataseter:
+    build: .
+    container_name: dataseter
+    ports:
+      - "8080:8080"  # Web UI
+      - "8000:8000"  # API
+    volumes:
+      - ./data/input:/data/input
+      - ./data/output:/data/output
+      - dataseter-cache:/data/cache
+      - ./config:/app/config
+    environment:
+      - DATASETER_CONFIG=/app/config/config.yaml
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=INFO
+    restart: unless-stopped
+    networks:
+      - dataseter-network
+
+  # Optional: Redis for caching and job queue
+  redis:
+    image: redis:7-alpine
+    container_name: dataseter-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - dataseter-network
+    restart: unless-stopped
+
+  # Optional: PostgreSQL for metadata storage
+  postgres:
+    image: postgres:15-alpine
+    container_name: dataseter-postgres
+    environment:
+      - POSTGRES_DB=dataseter
+      - POSTGRES_USER=dataseter
+      - POSTGRES_PASSWORD=dataseter123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - dataseter-network
+    restart: unless-stopped
+
+  # Optional: MinIO for object storage
+  minio:
+    image: minio/minio:latest
+    container_name: dataseter-minio
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio-data:/data
+    networks:
+      - dataseter-network
+    restart: unless-stopped
+
+volumes:
+  dataseter-cache:
+  redis-data:
+  postgres-data:
+  minio-data:
+
+networks:
+  dataseter-network:
+    driver: bridge
