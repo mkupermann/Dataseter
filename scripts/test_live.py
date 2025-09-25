@@ -40,7 +40,7 @@ def test_single_website(url, max_depth=0):
 
         # Display results
         if len(dataset) > 0:
-            console.print(f"[green]✓ Success![/green] Extracted in {elapsed:.2f}s")
+            console.print(f"[green]Success![/green] Extracted in {elapsed:.2f}s")
 
             doc = dataset.documents[0]
             console.print(f"\nFirst 500 characters of extracted text:")
@@ -63,11 +63,11 @@ def test_single_website(url, max_depth=0):
 
             return True
         else:
-            console.print(f"[yellow]⚠ No content extracted[/yellow]")
+            console.print(f"[yellow]Warning: No content extracted[/yellow]")
             return False
 
     except Exception as e:
-        console.print(f"[red]✗ Error: {e}[/red]")
+        console.print(f"[red]Error: {e}[/red]")
         return False
 
 
@@ -100,6 +100,11 @@ def test_multiple_websites():
             "name": "Example.com",
             "url": "https://example.com",
             "max_depth": 0
+        },
+        {
+            "name": "n-tv.de (German News)",
+            "url": "https://www.n-tv.de",
+            "max_depth": 0
         }
     ]
 
@@ -124,31 +129,31 @@ def test_multiple_websites():
             if len(dataset) > 0:
                 results.append({
                     "name": site['name'],
-                    "status": "✓",
+                    "status": "Success",
                     "docs": len(dataset),
                     "chars": dataset.statistics.get('total_text_length', 0),
                     "time": elapsed
                 })
-                console.print(f"  [green]✓[/green] Extracted {len(dataset)} documents")
+                console.print(f"  [green]Success[/green] Extracted {len(dataset)} documents")
             else:
                 results.append({
                     "name": site['name'],
-                    "status": "⚠",
+                    "status": "Warning",
                     "docs": 0,
                     "chars": 0,
                     "time": elapsed
                 })
-                console.print(f"  [yellow]⚠[/yellow] No content extracted")
+                console.print(f"  [yellow]Warning[/yellow] No content extracted")
 
         except Exception as e:
             results.append({
                 "name": site['name'],
-                "status": "✗",
+                "status": "Failed",
                 "docs": 0,
                 "chars": 0,
                 "time": 0
             })
-            console.print(f"  [red]✗[/red] Error: {str(e)[:50]}")
+            console.print(f"  [red]Failed[/red] Error: {str(e)[:50]}")
 
     # Display summary table
     console.print("\n[bold]Summary:[/bold]")
@@ -236,10 +241,10 @@ def test_javascript_rendering():
         result = extractor.extract(url)
 
         if result.get('text'):
-            console.print(f"  [green]✓[/green] Extracted {len(result['text'])} characters")
+            console.print(f"  [green]Success[/green] Extracted {len(result['text'])} characters")
             console.print(f"  Rendered with: {result.get('metadata', {}).get('rendered_with', 'static')}")
         else:
-            console.print(f"  [red]✗[/red] No content extracted")
+            console.print(f"  [red]Failed[/red] No content extracted")
 
 
 def test_error_handling():
@@ -261,11 +266,11 @@ def test_error_handling():
         result = extractor.extract(url)
 
         if result.get('error'):
-            console.print(f"  [green]✓[/green] Error handled: {result['error'][:50]}")
+            console.print(f"  [green]Success[/green] Error handled: {result['error'][:50]}")
         elif result.get('text'):
-            console.print(f"  [yellow]⚠[/yellow] Unexpectedly extracted content")
+            console.print(f"  [yellow]Warning[/yellow] Unexpectedly extracted content")
         else:
-            console.print(f"  [green]✓[/green] Returned empty content")
+            console.print(f"  [green]Success[/green] Returned empty content")
 
 
 def main():

@@ -1,0 +1,105 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info
+dist
+build
+eggs
+.eggs
+wheels
+*.egg-info
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv
+env
+ENV
+.venv
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+.DS_Store
+
+# Testing
+.pytest_cache
+.coverage
+htmlcov
+.tox
+.hypothesis
+
+# Documentation build
+docs/_build
+docs/.doctrees
+
+# Jupyter
+.ipynb_checkpoints
+*.ipynb
+
+# Data files (don't include in image)
+data/
+output/
+datasets/
+*.jsonl
+*.parquet
+*.csv
+*.db
+*.sqlite
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+.cache/
+
+# Large test files
+tests/sample_data/*.pdf
+tests/sample_data/*.docx
+tests/sample_data/*.xlsx
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+docker-build.sh
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Documentation (but keep README.md for setup.py)
+TESTING.md
+TEST_SUMMARY.md
+RUN_ME.md
+CHANGES_SUMMARY.md
+DOCKER_*.md
+CONTRIBUTING.md
+LICENSE
+
+# Test results
+test_results.json
+ntv_test_results.json
+*.html
+
+# Mac
+.DS_Store
+
+# Environment files
+.env
+.env.local

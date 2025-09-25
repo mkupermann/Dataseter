@@ -370,7 +370,7 @@ def run_demo():
     3. Web UI: dataseter web
     4. API: See documentation
 
-    Visit: https://github.com/yourusername/dataseter
+    Visit: https://github.com/mkupermann/dataseter
     """, title="Next Steps"))
 
 

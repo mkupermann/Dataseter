@@ -1,56 +1,56 @@
-# 🚀 Dataseter - Advanced AI Training Dataset Creator
+# Dataseter - Advanced AI Training Dataset Creator
 
 ![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Docker](https://img.shields.io/badge/docker-supported-blue.svg)
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)
 
-## 📋 Overview
+## Overview
 
 Dataseter is a comprehensive, production-ready tool for creating high-quality datasets for AI/ML training from diverse sources including PDFs, websites, office documents, and eBooks. It features advanced text extraction, processing pipelines, quality control, and both CLI and web interfaces.
 
-## ✨ Key Features
+## Key Features
 
-### 📥 Multi-Source Data Extraction
+### Multi-Source Data Extraction
 - **PDF Processing**: Advanced OCR, layout preservation, table extraction
 - **Web Scraping**: Recursive crawling, JavaScript rendering, robots.txt compliance
 - **Office Documents**: Word, Excel, PowerPoint, OpenOffice formats
 - **eBooks**: EPUB, MOBI, AZW3, FB2 support
 - **Plain Text**: TXT, Markdown, RTF, LaTeX
 
-### 🔧 Advanced Processing
+### Advanced Processing
 - **Intelligent Chunking**: Semantic, sliding window, and custom strategies
 - **Quality Control**: Deduplication, language detection, quality scoring
 - **Privacy Protection**: PII detection and redaction
 - **Metadata Preservation**: Source tracking, timestamps, authorship
 - **Multi-Language Support**: 50+ languages with proper tokenization
 
-### 📊 Output Formats
+### Output Formats
 - **AI-Ready Formats**: HuggingFace datasets, TensorFlow records, PyTorch tensors
 - **Standard Formats**: JSON, JSONL, CSV, Parquet, Arrow
 - **Custom Templates**: Configurable output schemas
 - **Token Counting**: GPT, BERT, T5, and custom tokenizers
 
-### 🎯 Analysis Tools
+### Analysis Tools
 - **Dataset Statistics**: Size, diversity, quality metrics
 - **Visualization**: Distribution plots, word clouds, embeddings
 - **Validation**: Schema validation, consistency checks
 - **Benchmarking**: Performance metrics, processing speed
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Installation
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/dataseter.git
+git clone https://github.com/mkupermann/dataseter.git
 cd dataseter
 
 # Install with pip
 pip install -e .
 
 # Or use Docker
-docker pull dataseter/dataseter:latest
+docker pull mkupermann/dataseter:latest
 ```
 
 ### Basic Usage
@@ -97,7 +97,7 @@ dataseter analyze dataset.jsonl --report analysis.html
 dataseter web --port 8080
 ```
 
-## 🖥️ Web Interface
+## Web Interface
 
 Access the intuitive web GUI at `http://localhost:8080` after running:
 
@@ -112,7 +112,7 @@ Features:
 - Dataset preview and download
 - Analysis dashboard
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 dataseter/
@@ -145,7 +145,7 @@ dataseter/
 └── config/              # Configuration files
 ```
 
-## 🔧 Configuration
+## Configuration
 
 Configure via `config.yaml`:
 
@@ -180,7 +180,7 @@ output:
   include_metadata: true
 ```
 
-## 🧪 Advanced Features
+## Advanced Features
 
 ### Custom Extractors
 
@@ -220,7 +220,7 @@ creator = DistributedCreator(
 )
 ```
 
-## 📊 Performance
+## Performance
 
 | Source Type | Processing Speed | Memory Usage |
 |------------|------------------|--------------|
@@ -229,7 +229,7 @@ creator = DistributedCreator(
 | Office     | ~200 docs/sec    | ~100 MB/1000 docs |
 | eBooks     | ~500 pages/sec   | ~50 MB/book |
 
-## 🔒 Security & Privacy
+## Security & Privacy
 
 - **PII Detection**: Automatic detection of names, emails, phone numbers, SSNs
 - **Data Encryption**: Optional encryption for sensitive datasets
@@ -237,7 +237,7 @@ creator = DistributedCreator(
 - **Audit Logging**: Complete processing history
 - **GDPR Compliance**: Right to deletion, data minimization
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Run all tests
@@ -250,7 +250,7 @@ pytest tests/extractors/
 pytest --cov=dataseter --cov-report=html
 ```
 
-## 📚 Documentation
+## Documentation
 
 - [Full Documentation](docs/README.md)
 - [API Reference](docs/api.md)
@@ -259,11 +259,11 @@ pytest --cov=dataseter --cov-report=html
 - [Processing Pipeline](docs/processing.md)
 - [Examples](examples/README.md)
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-## 📈 Roadmap
+## Roadmap
 
 - [ ] GPU acceleration for large-scale processing
 - [ ] Real-time streaming data support
@@ -273,11 +273,11 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 - [ ] Advanced deduplication with MinHash
 - [ ] Synthetic data augmentation
 
-## 📄 License
+## License
 
 MIT License - see [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 Built with:
 - [PyPDF2](https://github.com/py-pdf/pypdf) - PDF processing
@@ -287,12 +287,12 @@ Built with:
 - [FastAPI](https://fastapi.tiangolo.com/) - API framework
 - [React](https://reactjs.org/) - Web UI
 
-## 📧 Contact
+## Contact
 
-- GitHub Issues: [Report bugs or request features](https://github.com/yourusername/dataseter/issues)
+- GitHub Issues: [Report bugs or request features](https://github.com/mkupermann/dataseter/issues)
 - Email: dataseter@example.com
 - Discord: [Join our community](https://discord.gg/dataseter)
 
 ---
 
-**Made with ❤️ for the AI community**
+**Made for the AI community**

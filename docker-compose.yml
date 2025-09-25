@@ -2,8 +2,11 @@ version: '3.8'
 
 services:
   dataseter:
-    build: .
+    image: mkupermann/dataseter:latest
     container_name: dataseter
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"  # Web UI
       - "8000:8000"  # API

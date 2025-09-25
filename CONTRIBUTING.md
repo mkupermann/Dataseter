@@ -6,7 +6,7 @@ Thank you for your interest in contributing to Dataseter! We welcome contributio
 
 ### Reporting Bugs
 
-1. Check if the bug has already been reported in [Issues](https://github.com/yourusername/dataseter/issues)
+1. Check if the bug has already been reported in [Issues](https://github.com/mkupermann/dataseter/issues)
 2. Create a new issue with:
    - Clear title and description
    - Steps to reproduce
@@ -15,7 +15,7 @@ Thank you for your interest in contributing to Dataseter! We welcome contributio
 
 ### Suggesting Features
 
-1. Check existing [feature requests](https://github.com/yourusername/dataseter/issues?q=is%3Aissue+label%3Aenhancement)
+1. Check existing [feature requests](https://github.com/mkupermann/dataseter/issues?q=is%3Aissue+label%3Aenhancement)
 2. Open a new issue with the `enhancement` label
 3. Describe the feature and its use case
 
@@ -40,7 +40,7 @@ Thank you for your interest in contributing to Dataseter! We welcome contributio
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/dataseter.git
+git clone https://github.com/mkupermann/dataseter.git
 cd dataseter
 
 # Create virtual environment
