@@ -1,4 +1,4 @@
-# Dataseter - Advanced AI Training Dataset Creator
+# Dataseter - Advanced Data Scraper & AI Training Dataset Creator
 
 ![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
