@@ -17,4 +17,5 @@ print("\nStarting Dataseter Web Server...")
 print("Server will be available at: http://localhost:8080")
 print("Press Ctrl+C to stop\n")
 
-os.system(f"{sys.executable} -m uvicorn src.api.main:app --host 0.0.0.0 --port 8080 --reload")
+# Run without --reload flag as it can cause startup issues on some systems
+os.system(f"{sys.executable} -m uvicorn src.api.main:app --host 0.0.0.0 --port 8080")

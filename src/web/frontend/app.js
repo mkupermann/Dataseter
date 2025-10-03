@@ -1,6 +1,7 @@
 // Dataseter Web GUI JavaScript
 
-const API_URL = 'http://localhost:8080';
+// Use relative URL to work with any host
+const API_URL = window.location.origin;
 
 let sources = [];
 let currentJobId = null;
@@ -106,6 +107,12 @@ function removeSource(index) {
 
 function updateSourceList() {
     const sourceList = document.getElementById('source-list');
+
+    // Check if element exists before updating
+    if (!sourceList) {
+        console.warn('source-list element not found');
+        return;
+    }
 
     if (sources.length === 0) {
         sourceList.innerHTML = '<p class="text-gray-500">No sources added yet</p>';
