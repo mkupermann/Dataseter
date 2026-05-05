@@ -9,7 +9,7 @@
 
 Dataseter is a comprehensive, production-ready tool for creating high-quality datasets for AI/ML training from diverse sources including PDFs, websites, office documents, and eBooks. It features advanced text extraction, processing pipelines, quality control, and both CLI and web interfaces.
 
-## 🎯 Key Features
+## Key Features
 
 ### Multi-Source Data Extraction
 - **PDF Processing**: Advanced OCR, layout preservation, table extraction
@@ -18,7 +18,7 @@ Dataseter is a comprehensive, production-ready tool for creating high-quality da
 - **eBooks**: EPUB, MOBI, AZW3, FB2 support
 - **Plain Text**: TXT, Markdown, RTF, LaTeX
 
-### Advanced AI-Optimized Processing 🚀
+### Advanced AI-Optimized Processing 
 
 #### Semantic Chunking with Reasoning Preservation
 - **Transformer-Based Boundaries**: Uses sentence transformers to find natural semantic boundaries
