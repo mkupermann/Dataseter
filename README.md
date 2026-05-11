@@ -1,24 +1,35 @@
-# Dataseter - Advanced Data Scraper & AI Training Dataset Creator
+# Dataseter - Data Scraper & AI Training Dataset Creator
 
 ![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Docker](https://img.shields.io/badge/docker-supported-blue.svg)
-![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)
+
+## Status
+
+This is a solo, work-in-progress project (roughly a dozen commits at the time
+of writing) with no continuous-integration coverage yet. Treat it as a
+portfolio data-prep toolkit, not a vetted production tool. Interfaces and
+internal modules may change, and many "advanced" features are heuristic
+rather than model-driven (see feature descriptions below for honest
+breakdowns).
 
 ## Overview
 
-Dataseter is a comprehensive, production-ready tool for creating high-quality datasets for AI/ML training from diverse sources including PDFs, websites, office documents, and eBooks. It features advanced text extraction, processing pipelines, quality control, and both CLI and web interfaces.
+Dataseter is a toolkit for assembling datasets for AI/ML training from diverse
+sources including PDFs, websites, office documents, and eBooks. It provides
+text extraction, processing pipelines, basic quality control, and both CLI
+and web interfaces.
 
 ## Key Features
 
 ### Multi-Source Data Extraction
-- **PDF Processing**: Advanced OCR, layout preservation, table extraction
+- **PDF Processing**: OCR (via pytesseract/ocrmypdf), layout-aware extraction, table extraction
 - **Web Scraping**: Recursive crawling, JavaScript rendering, robots.txt compliance
 - **Office Documents**: Word, Excel, PowerPoint, OpenOffice formats
 - **eBooks**: EPUB, MOBI, AZW3, FB2 support
 - **Plain Text**: TXT, Markdown, RTF, LaTeX
 
-### Advanced AI-Optimized Processing 
+### Processing
 
 #### Semantic Chunking with Reasoning Preservation
 - **Transformer-Based Boundaries**: Uses sentence transformers to find natural semantic boundaries
@@ -26,29 +37,29 @@ Dataseter is a comprehensive, production-ready tool for creating high-quality da
 - **Argument Structure Recognition**: Maintains premise-conclusion relationships
 - **Coherence Scoring**: Ensures chunks maintain contextual integrity
 
-#### Knowledge Graph Extraction
-- **Entity Recognition**: Automated extraction of people, places, organizations
-- **Relationship Mapping**: Discovers connections between entities
-- **Concept Hierarchies**: Builds taxonomies of domain concepts
-- **Fact Extraction**: Structured knowledge from unstructured text
+#### spaCy NER-based entity extraction
+- **Entity Recognition**: Automated extraction of people, places, organizations via spaCy NER
+- **Relationship Mapping**: Heuristic connections between co-occurring entities
+- **Concept Hierarchies**: Rule-based taxonomies of domain concepts
+- **Fact Extraction**: Pattern-based structured tuples from unstructured text
 
-#### Advanced Quality Assessment
+#### Quality Assessment
 - **Semantic Quality Scoring**: Multi-dimensional quality analysis
-- **Authority Detection**: Identifies authoritative vs. speculative content
-- **Factuality Assessment**: Evaluates factual accuracy and consistency
+- **Authority Detection**: Heuristic signals separating authoritative vs. speculative content
+- **Factuality Assessment**: Heuristic factual-consistency checks
 - **Training Value Scoring**: Estimates usefulness for AI model training
 
-#### Metacognitive Annotations
-- **Confidence Analysis**: Assesses certainty levels in statements
+#### Heuristic annotation (rule-based metadata extraction)
+- **Confidence Analysis**: Assesses certainty levels in statements via cue words
 - **Complexity Metrics**: Evaluates cognitive load and readability
 - **Prerequisite Knowledge**: Identifies required background concepts
 - **Learning Objectives**: Extracts educational goals and outcomes
 
-#### Adversarial Testing Framework
-- **Bias Detection**: Identifies and quantifies various bias types
+#### Simple bias/quality heuristic checks
+- **Bias Detection**: Rule-based screens for common bias categories
 - **Contradiction Analysis**: Finds logical inconsistencies
-- **Harmful Content Detection**: Screens for inappropriate content
-- **Fairness Analysis**: Ensures balanced representation
+- **Harmful Content Detection**: Pattern-based screens for inappropriate content
+- **Fairness Analysis**: Representation counts across groups
 
 #### Standard Processing Features
 - **Quality Control**: Deduplication, language detection
@@ -77,8 +88,15 @@ Dataseter is a comprehensive, production-ready tool for creating high-quality da
 git clone https://github.com/mkupermann/dataseter.git
 cd dataseter
 
-# Install with pip
+# Install core only
 pip install -e .
+
+# Install with optional extras (pick what you need)
+pip install -e ".[pdf]"      # PDF extraction stack
+pip install -e ".[web]"      # Web scraping stack
+pip install -e ".[office]"   # Office/eBook formats
+pip install -e ".[ml]"       # Transformers / spaCy / torch
+pip install -e ".[all]"      # Everything
 
 # Or use Docker
 docker pull mkupermann/dataseter:latest
@@ -97,17 +115,16 @@ creator.add_pdf("documents/report.pdf")
 creator.add_website("https://example.com", max_depth=2)
 creator.add_directory("./texts", recursive=True)
 
-# Process with advanced AI features
+# Process
 dataset = creator.process(
     chunk_size=512,
     overlap=50,
     remove_pii=True,
     quality_threshold=0.7,
-    # New AI-optimized features
-    chunking_strategy='semantic',  # Preserves reasoning chains
-    extract_knowledge=True,         # Build knowledge graphs
-    add_metacognitive_annotations=True,  # Add learning metadata
-    enable_adversarial_testing=True      # Screen for bias/issues
+    chunking_strategy='semantic',        # Preserves reasoning chains
+    extract_knowledge=True,              # spaCy NER-based entity extraction
+    add_metacognitive_annotations=True,  # Heuristic annotation
+    enable_adversarial_testing=True      # Simple bias/quality heuristic checks
 )
 
 # Export
@@ -135,7 +152,7 @@ dataseter web --port 8080
 
 ## Web Interface
 
-Access the intuitive web GUI at `http://localhost:8080` after running:
+Access the web GUI at `http://localhost:8080` after running:
 
 ```bash
 dataseter web
@@ -146,7 +163,7 @@ Features:
 - Real-time processing progress with time estimation
 - Interactive configuration with depth control
 - Dataset preview and quality metrics
-- Download with comprehensive error handling
+- Download with error handling
 - Analysis dashboard with recommendations
 
 ## Project Structure
@@ -268,20 +285,20 @@ creator = DistributedCreator(
 
 ## Security & Privacy
 
-- **PII Detection**: Automatic detection of names, emails, phone numbers, SSNs
+- **PII Detection**: Detection of names, emails, phone numbers, SSNs
 - **Data Encryption**: Optional encryption for sensitive datasets
 - **Access Control**: API key authentication, rate limiting
-- **Audit Logging**: Complete processing history
+- **Audit Logging**: Processing history
 - **GDPR Compliance**: Right to deletion, data minimization
 
 ## Recent Improvements
 
 ### v1.1 - Progress Tracking & Quality Enhancements
-- **Real-time Progress**: Complete progress tracking with time estimation and remaining duration
+- **Real-time Progress**: Progress tracking with time estimation and remaining duration
 - **Web Extraction Fixes**: Resolved hanging issues with depth-controlled crawling
-- **Quality Metrics**: Enhanced dataset preview with quality scoring and recommendations
+- **Quality Metrics**: Dataset preview with quality scoring and recommendations
 - **Error Handling**: Improved error handling for empty datasets and failed extractions
-- **Threading**: Non-blocking background processing with comprehensive status updates
+- **Threading**: Non-blocking background processing with status updates
 - **Docker Support**: Multi-stage Docker builds with optimized dependencies
 
 ## Testing
@@ -308,7 +325,7 @@ pytest --cov=dataseter --cov-report=html
 
 ## Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+Contributions welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## Roadmap
 
@@ -338,8 +355,7 @@ Built with:
 
 - GitHub Issues: [Report bugs or request features](https://github.com/mkupermann/dataseter/issues)
 - Email: michael@kupermann.com
-- Discord: [Join our community](https://discord.gg/dataseter)
 
 ---
 
-**Made for the AI community**
+Made for the AI community.
